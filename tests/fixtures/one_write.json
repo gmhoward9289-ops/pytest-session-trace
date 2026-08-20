@@ -1,0 +1,1 @@
+{"schema":"henhouse.tools.v1","calls":[{"name":"Write","input":{"file_path":"src/foo.py","contents":"print(1)\n"},"id":"toolu_write_1","session_id":"sess","source":"claude","is_subagent":false}]}

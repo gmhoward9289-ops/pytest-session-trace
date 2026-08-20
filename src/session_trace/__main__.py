@@ -6,21 +6,16 @@ import sys
 from pathlib import Path
 
 from session_trace.codegen import render_test
-from session_trace.transcripts import iter_tool_calls, read_tail
+from session_trace.transcripts import load_tool_calls
 
 
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     if not args:
-        print("usage: python -m session_trace PATH.jsonl", file=sys.stderr)
+        print("usage: python -m session_trace PATH", file=sys.stderr)
         return 2
     path = Path(args[0])
-    records = read_tail(path, tail_bytes=path.stat().st_size)
-    calls = iter_tool_calls(
-        records,
-        session_id=path.stem,
-        is_subagent=path.name.startswith("agent-"),
-    )
+    calls = load_tool_calls(path)
     sys.stdout.write(render_test(calls))
     return 0
 

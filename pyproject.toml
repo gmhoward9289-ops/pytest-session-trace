@@ -24,13 +24,11 @@ classifiers = [
 ]
 dependencies = [
     "pytest>=7.0",
+    "henhouse>=0.1.0",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
-# henhouse is the parser source of truth when published; this package ships a
-# compatible local shim until `pip install henhouse` works.
-henhouse = ["henhouse"]
 anchor = ["trust-but-anchor"]
 
 [project.urls]

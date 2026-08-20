@@ -1,4 +1,4 @@
-"""ToolCall-compatible roundtrip (local shim until henhouse is installable)."""
+"""ToolCall re-export from henhouse."""
 
 from session_trace.types import ToolCall
 
