@@ -1,6 +1,6 @@
 """pytest-session-trace: recorded sessions as deterministic tool-call assertions."""
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 from session_trace.assert_tools import (
     assert_no_tool,
