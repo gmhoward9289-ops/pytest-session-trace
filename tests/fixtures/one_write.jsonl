@@ -1,0 +1,1 @@
+{"type":"assistant","message":{"model":"claude-sonnet-5","content":[{"type":"tool_use","id":"toolu_write_1","name":"Write","input":{"file_path":"src/foo.py","contents":"print(1)\n"}}]}}
