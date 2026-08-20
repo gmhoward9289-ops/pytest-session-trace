@@ -13,9 +13,15 @@ def test_render_test_contains_order_and_compiles():
         [
             ToolCall(name="Read", input={"file_path": "a.py"}),
             ToolCall(name="Write", input={"file_path": "src/foo.py"}),
+            ToolCall(name="Bash", input={"command": "pytest tests -v"}),
         ]
     )
     assert "assert_tool_order" in src
+    assert "assert_tool_called" in src
+    assert "assert_write_path" in src
+    assert "assert_tool_input_contains" in src
+    assert "foo.py" in src
+    assert "pytest" in src
     compile(src, "<generated>", "exec")
 
 

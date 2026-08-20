@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- `assert_tool_input_contains` for substring checks on tool inputs
+- Richer `python -m session_trace` codegen (order, per-tool calls, write paths, query/command patterns)
+
 ## 0.1.1
 
 - PyPI maiden release (`pip install pytest-session-trace`)

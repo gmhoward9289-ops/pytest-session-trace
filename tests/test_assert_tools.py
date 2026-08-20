@@ -51,3 +51,14 @@ def test_write_path():
 def test_write_path_missing():
     with pytest.raises(AssertionError, match="actual tools"):
         assert_write_path(_calls(), "missing.py")
+
+
+def test_tool_input_contains():
+    from session_trace.assert_tools import assert_tool_input_contains
+
+    calls = [
+        ToolCall(name="Bash", input={"command": "pytest tests -v"}),
+        ToolCall(name="swamp_kb_search", input={"query": "repo visibility"}),
+    ]
+    assert_tool_input_contains(calls, "Bash", "command", "pytest")
+    assert_tool_input_contains(calls, "swamp_kb_search", "query", "visibility")

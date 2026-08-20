@@ -47,3 +47,19 @@ def assert_write_path(calls: list, path_suffix: str) -> None:
     raise AssertionError(
         f"no Write/Edit path ending with {path_suffix!r}; actual tools: {actual}"
     )
+
+
+def assert_tool_input_contains(
+    calls: list, name: str, key: str, substring: str
+) -> None:
+    """A tool_use named name has input[key] containing substring."""
+    for call in calls:
+        if call.name != name:
+            continue
+        value = (call.input or {}).get(key)
+        if isinstance(value, str) and substring in value:
+            return
+    raise AssertionError(
+        f"no {name!r} with {key!r} containing {substring!r}; "
+        f"actual tools: {_names(calls)}"
+    )
