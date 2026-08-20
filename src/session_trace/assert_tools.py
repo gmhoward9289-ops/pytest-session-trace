@@ -57,7 +57,7 @@ def assert_tool_input_contains(
         if call.name != name:
             continue
         value = (call.input or {}).get(key)
-        if isinstance(value, str) and substring in value:
+        if value is not None and substring in str(value):
             return
     raise AssertionError(
         f"no {name!r} with {key!r} containing {substring!r}; "

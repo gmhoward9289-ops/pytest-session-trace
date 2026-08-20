@@ -58,7 +58,8 @@ def test_tool_input_contains():
 
     calls = [
         ToolCall(name="Bash", input={"command": "pytest tests -v"}),
-        ToolCall(name="swamp_kb_search", input={"query": "repo visibility"}),
+        ToolCall(name="swamp_kb_search", input={"query": "repo visibility", "limit": 5}),
     ]
     assert_tool_input_contains(calls, "Bash", "command", "pytest")
     assert_tool_input_contains(calls, "swamp_kb_search", "query", "visibility")
+    assert_tool_input_contains(calls, "swamp_kb_search", "limit", "5")

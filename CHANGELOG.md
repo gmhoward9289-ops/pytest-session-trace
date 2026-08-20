@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- `assert_tool_input_contains` matches non-string input via `str()` (e.g. numeric `limit`)
+- README: pair with pytest-mcp-contract; swamp-ops dogfood doc reference
+
 ## 0.1.2
 
 - `assert_tool_input_contains` for substring checks on tool inputs

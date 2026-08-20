@@ -54,6 +54,8 @@ If neither `--session-trace` nor `SESSION_TRACE` is set, tests that request the 
 
 Parsing is delegated to [henhouse](https://github.com/gmhoward9289-ops/henhouse) (`load_tool_calls`, `ToolCall`).
 
+Pair with [pytest-mcp-contract](https://github.com/gmhoward9289-ops/pytest-mcp-contract) in the same repo: that plugin asserts the MCP server registers the right tools; this plugin asserts a saved session actually called them. swamp-ops `docs/SESSION_TRACE.md` documents the combined dogfood pattern.
+
 Optional extra `[anchor]` uses `trust_but_anchor.locate` to fail closed when a quoted argument is not in a source file:
 
 ```text
