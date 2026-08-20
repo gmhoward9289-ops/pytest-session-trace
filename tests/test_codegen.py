@@ -14,6 +14,21 @@ FIXTURE = Path(__file__).parent / "fixtures" / "one_write.jsonl"
 ANCHOR_FIXTURE = Path(__file__).parent / "fixtures" / "read_write_anchor.jsonl"
 
 
+def test_render_test_emits_all_input_keys_for_mcp_tool():
+    src = render_test(
+        [
+            ToolCall(
+                name="swamp_kb_search",
+                input={"query": "repo visibility", "limit": 5},
+            ),
+        ]
+    )
+    assert "repo visibility" in src
+    assert "'limit'" in src
+    assert "'5'" in src
+    compile(src, "<generated>", "exec")
+
+
 def test_render_test_contains_order_and_compiles():
     src = render_test(
         [

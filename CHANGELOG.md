@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Codegen emits all matching input keys per tool call (not just the first)
+- MCP-oriented assert keys: repo, limit, kind, dry_run, packet_path, scope, reason
+
 ## 0.1.4
 
 - `--anchor` codegen: emit `assert_arg_anchored` when Write quotes Read `tool_result` text

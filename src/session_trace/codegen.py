@@ -8,7 +8,20 @@ from pathlib import Path
 
 _WRITE_TOOLS = frozenset({"Write", "Edit"})
 _READ_TOOLS = frozenset({"Read"})
-_INPUT_ASSERT_KEYS = ("query", "search", "pattern", "command")
+_INPUT_ASSERT_KEYS = (
+    "query",
+    "search",
+    "pattern",
+    "command",
+    # MCP / swamp-ops tool args
+    "repo",
+    "limit",
+    "kind",
+    "dry_run",
+    "packet_path",
+    "scope",
+    "reason",
+)
 _MIN_ANCHOR_LEN = 12
 _MAX_SOURCE_CHARS = 4000
 
@@ -143,13 +156,16 @@ def render_test(
         inp = call.input or {}
         for key in _INPUT_ASSERT_KEYS:
             value = inp.get(key)
-            if isinstance(value, str) and value.strip():
-                snippet = value if len(value) <= 48 else value[:48]
-                body.append(
-                    f"    assert_tool_input_contains(session_trace, "
-                    f"{call.name!r}, {key!r}, {snippet!r})"
-                )
-                break
+            if value is None:
+                continue
+            text = str(value).strip()
+            if not text:
+                continue
+            snippet = text if len(text) <= 48 else text[:48]
+            body.append(
+                f"    assert_tool_input_contains(session_trace, "
+                f"{call.name!r}, {key!r}, {snippet!r})"
+            )
 
     if anchor_pairs:
         for index, pair in enumerate(anchor_pairs):
