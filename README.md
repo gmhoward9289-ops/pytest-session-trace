@@ -16,7 +16,7 @@ Or install tagged releases from GitHub:
 
 ```bash
 pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.2
-pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.4
+pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.5
 ```
 
 Develop from sibling clones under `dev/`:
@@ -54,7 +54,7 @@ If neither `--session-trace` nor `SESSION_TRACE` is set, tests that request the 
 
 Parsing is delegated to [henhouse](https://github.com/gmhoward9289-ops/henhouse) (`load_tool_calls`, `ToolCall`).
 
-Pair with [pytest-mcp-contract](https://github.com/gmhoward9289-ops/pytest-mcp-contract) in the same repo: that plugin asserts the MCP server registers the right tools, read-only annotations, and input JSON schemas; this plugin asserts a saved session actually called them. swamp-ops `docs/SESSION_TRACE.md` documents the combined dogfood pattern.
+Pair with [pytest-mcp-contract](https://github.com/gmhoward9289-ops/pytest-mcp-contract) in the same repo: that plugin asserts the MCP server registers the right tools, read-only annotations, and input JSON schemas; this plugin asserts a saved session actually called them. Public starter: [`pytest-mcp-contract/examples/proof_stack/`](https://github.com/gmhoward9289-ops/pytest-mcp-contract/tree/main/examples/proof_stack). swamp-ops `docs/SESSION_TRACE.md` documents the private dogfood pattern.
 
 `python -m session_trace` codegen emits `assert_tool_input_contains` for MCP args (`query`, `repo`, `limit`, …) as well as editor tools.
 
