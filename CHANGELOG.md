@@ -4,6 +4,7 @@
 
 - Codegen emits all matching input keys per tool call (not just the first)
 - MCP-oriented assert keys: repo, limit, kind, dry_run, packet_path, scope, reason
+- E2E: generated `--anchor` test runs under pytest (`test_generated_anchor_e2e.py`)
 
 ## 0.1.4
 
