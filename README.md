@@ -1,5 +1,7 @@
 # pytest-session-trace
 
+[![Discussions](https://img.shields.io/github/discussions/gmhoward9289-ops/pytest-session-trace)](https://github.com/gmhoward9289-ops/pytest-session-trace/discussions)
+
 Pytest plugin that turns a recorded agent session (Claude Code JSONL, henhouse `tools.v1` JSON, or legacy call list) into **deterministic tool-call assertions**. No LLM in CI. No network. No MCP SDK.
 
 ## Install
@@ -7,8 +9,14 @@ Pytest plugin that turns a recorded agent session (Claude Code JSONL, henhouse `
 Python 3.10+. Requires [henhouse](https://github.com/gmhoward9289-ops/henhouse):
 
 ```bash
-pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.0
-pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.0
+pip install henhouse pytest-session-trace
+```
+
+Or install tagged releases from GitHub:
+
+```bash
+pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.1
+pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.1
 ```
 
 Develop from sibling clones under `dev/`:
@@ -59,6 +67,8 @@ python -m session_trace path/to/session.jsonl > test_session.py
 ```
 
 That file is a copy-pasteable starting point, not a required CI step for this package.
+
+Have a recorded session and a pytest file that pins it? Post the workflow in [Show and tell](https://github.com/gmhoward9289-ops/pytest-session-trace/discussions/categories/show-and-tell).
 
 ## License
 
