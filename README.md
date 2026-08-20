@@ -2,9 +2,18 @@
 
 Pytest plugin that turns a recorded agent session (Claude Code JSONL, henhouse `tools.v1` JSON, or legacy call list) into **deterministic tool-call assertions**. No LLM in CI. No network. No MCP SDK.
 
-Install locally:
+## Install
 
-```text
+Python 3.10+. Requires [henhouse](https://github.com/gmhoward9289-ops/henhouse):
+
+```bash
+pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.0
+pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.0
+```
+
+Develop from sibling clones under `dev/`:
+
+```bash
 pip install -e ../henhouse
 pip install -e .
 pytest tests -v --session-trace tests/fixtures/one_write.jsonl
@@ -50,3 +59,7 @@ python -m session_trace path/to/session.jsonl > test_session.py
 ```
 
 That file is a copy-pasteable starting point, not a required CI step for this package.
+
+## License
+
+Apache-2.0

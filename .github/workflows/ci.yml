@@ -19,10 +19,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: gmhoward9289-ops/henhouse
+          ref: v0.1.0
+          path: henhouse
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
       - name: Install
-        run: pip install ./vendor/henhouse -e . --no-deps && pip install pytest
+        run: pip install ./henhouse -e . --no-deps && pip install pytest
       - name: Tests
         run: pytest tests -v
