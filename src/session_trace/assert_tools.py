@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-_WRITE_TOOLS = ("Write", "Edit")
+_WRITE_TOOLS = ("Write", "Edit", "StrReplace")
 
 
 def _names(calls) -> list[str]:
@@ -41,9 +41,11 @@ def assert_write_path(calls: list, path_suffix: str) -> None:
     for call in calls:
         if call.name not in _WRITE_TOOLS:
             continue
-        file_path = (call.input or {}).get("file_path")
-        if isinstance(file_path, str) and file_path.endswith(path_suffix):
-            return
+        inp = call.input or {}
+        for key in ("file_path", "path"):
+            file_path = inp.get(key)
+            if isinstance(file_path, str) and file_path.endswith(path_suffix):
+                return
     raise AssertionError(
         f"no Write/Edit path ending with {path_suffix!r}; actual tools: {actual}"
     )

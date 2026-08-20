@@ -48,6 +48,16 @@ def test_write_path():
     assert_write_path(_calls(), "foo.py")
 
 
+def test_write_path_strreplace_uses_path_key():
+    calls = [
+        ToolCall(
+            name="StrReplace",
+            input={"path": "src/config.py", "old_string": "a", "new_string": "b"},
+        ),
+    ]
+    assert_write_path(calls, "config.py")
+
+
 def test_write_path_missing():
     with pytest.raises(AssertionError, match="actual tools"):
         assert_write_path(_calls(), "missing.py")

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7
+
+- `--anchor` pairs Edit (`new_string` / `contents` / `old_string`) and StrReplace (`new_string`, then `old_string`) with prior Read results
+- Codegen CLI: `--test-name`, `--no-order`, `--tools NAME,...`
+- `assert_write_path` accepts StrReplace `path` as well as `file_path`
+
 ## 0.1.6
 
 - E2E: generated `--anchor` test runs under pytest (`test_generated_anchor_e2e.py`)

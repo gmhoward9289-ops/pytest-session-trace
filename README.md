@@ -16,7 +16,7 @@ Or install tagged releases from GitHub:
 
 ```bash
 pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.2
-pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.5
+pip install git+https://github.com/gmhoward9289-ops/pytest-session-trace@v0.1.7
 ```
 
 Develop from sibling clones under `dev/`:
@@ -69,10 +69,20 @@ pip install -e ".[anchor]"
 ```text
 python -m session_trace path/to/session.jsonl > test_session.py
 python -m session_trace --anchor path/to/session.jsonl > test_session.py
+python -m session_trace path/to/session.jsonl --test-name test_agent_flow --tools Write,Read
+python -m session_trace path/to/session.jsonl --no-order --tools swamp_estate_status
 ```
 
-With `--anchor`, codegen emits `assert_arg_anchored` when a Write/Edit `contents`
-quotes text from a prior Read `tool_result` in the JSONL (requires `[anchor]` extra).
+With `--anchor`, codegen emits `assert_arg_anchored` when Write/Edit/StrReplace text
+quotes a prior Read `tool_result` in the JSONL (requires `[anchor]` extra). Supported
+write shapes: Write `contents`; Edit `new_string`, `contents`, or `old_string`; StrReplace
+`new_string` (preferred) or `old_string`.
+
+| Flag | Effect |
+| --- | --- |
+| `--test-name NAME` | Generated test function name (default `test_session`) |
+| `--no-order` | Omit `assert_tool_order` |
+| `--tools NAME,...` | Only emit assertions for listed tools |
 
 That file is a copy-pasteable starting point, not a required CI step for this package.
 

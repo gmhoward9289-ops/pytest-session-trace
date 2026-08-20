@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-_WRITE_TOOLS = frozenset({"Write", "Edit"})
+_WRITE_TOOLS = frozenset({"Write", "Edit", "StrReplace"})
 _READ_TOOLS = frozenset({"Read"})
 _INPUT_ASSERT_KEYS = (
     "query",
@@ -28,7 +28,7 @@ _MAX_SOURCE_CHARS = 4000
 
 @dataclass(frozen=True)
 class AnchorPair:
-    """Read tool_result text and a Write/Edit substring that appears in it."""
+    """Read tool_result text and a Write/Edit/StrReplace substring that appears in it."""
 
     read_path: str
     source_text: str
@@ -85,6 +85,51 @@ def load_tool_result_map(path: Path) -> dict[str, str]:
     return mapping
 
 
+def _write_file_path(inp: dict) -> str | None:
+    for key in ("file_path", "path"):
+        value = inp.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return None
+
+
+def _writable_text_candidates(tool_name: str, inp: dict) -> list[tuple[str, bool]]:
+    """(text, allow_partial) pairs to scan for quotes from a prior Read."""
+    candidates: list[tuple[str, bool]] = []
+    if tool_name == "StrReplace":
+        new_string = inp.get("new_string")
+        if isinstance(new_string, str) and new_string:
+            candidates.append((new_string, False))
+        old_string = inp.get("old_string")
+        if isinstance(old_string, str) and old_string:
+            candidates.append((old_string, True))
+        return candidates
+    if tool_name == "Write":
+        value = inp.get("contents")
+        if isinstance(value, str) and value:
+            candidates.append((value, True))
+        return candidates
+    if tool_name == "Edit":
+        new_string = inp.get("new_string")
+        if isinstance(new_string, str) and new_string:
+            candidates.append((new_string, False))
+        contents = inp.get("contents")
+        if isinstance(contents, str) and contents:
+            candidates.append((contents, True))
+        old_string = inp.get("old_string")
+        if isinstance(old_string, str) and old_string:
+            candidates.append((old_string, True))
+    return candidates
+
+
+def _find_anchor_for_text(source: str, text: str, *, allow_partial: bool) -> str | None:
+    if text in source:
+        return _find_quote(source, text)
+    if allow_partial:
+        return _find_quote(source, text)
+    return None
+
+
 def _find_quote(source: str, written: str) -> str | None:
     if not source or not written:
         return None
@@ -98,7 +143,7 @@ def _find_quote(source: str, written: str) -> str | None:
 
 
 def find_anchor_pairs(calls, tool_results: dict[str, str]) -> list[AnchorPair]:
-    """Pair Read tool_results with later Write/Edit contents that quote them."""
+    """Pair Read tool_results with later Write/Edit/StrReplace text that quotes them."""
     pairs: list[AnchorPair] = []
     read_sources: list[tuple[str, str]] = []
 
@@ -111,22 +156,32 @@ def find_anchor_pairs(calls, tool_results: dict[str, str]) -> list[AnchorPair]:
             if tool_id and tool_id in tool_results:
                 read_sources.append((file_path, tool_results[tool_id]))
         elif call.name in _WRITE_TOOLS:
-            contents = (call.input or {}).get("contents")
-            if not isinstance(contents, str):
-                continue
+            inp = call.input or {}
             for read_path, source in read_sources:
-                quoted = _find_quote(source, contents)
-                if quoted:
-                    pairs.append(
-                        AnchorPair(
-                            read_path=read_path,
-                            source_text=source,
-                            quoted=quoted,
-                            write_tool=call.name,
-                        )
+                for text, allow_partial in _writable_text_candidates(call.name, inp):
+                    quoted = _find_anchor_for_text(
+                        source, text, allow_partial=allow_partial
                     )
-                    break
+                    if quoted:
+                        pairs.append(
+                            AnchorPair(
+                                read_path=read_path,
+                                source_text=source,
+                                quoted=quoted,
+                                write_tool=call.name,
+                            )
+                        )
+                        break
+                else:
+                    continue
+                break
     return pairs
+
+
+def _filter_calls(calls, tools: frozenset[str] | None):
+    if tools is None:
+        return calls
+    return [call for call in calls if call.name in tools]
 
 
 def _escape_triple(text: str) -> str:
@@ -138,16 +193,21 @@ def render_test(
     test_name: str = "test_session",
     *,
     anchor_pairs: list[AnchorPair] | None = None,
+    emit_order: bool = True,
+    tools: frozenset[str] | None = None,
 ) -> str:
-    names = [c.name for c in calls]
+    scoped = _filter_calls(calls, tools)
+    names = [c.name for c in scoped]
     body: list[str] = []
-    body.append(f"    assert_tool_order(session_trace, {names!r})")
+    if emit_order and names:
+        body.append(f"    assert_tool_order(session_trace, {names!r})")
     for name in dict.fromkeys(names):
         body.append(f"    assert_tool_called(session_trace, {name!r})")
-    for call in calls:
+    for call in scoped:
         if call.name in _WRITE_TOOLS:
-            file_path = (call.input or {}).get("file_path")
-            if isinstance(file_path, str) and file_path:
+            inp = call.input or {}
+            file_path = _write_file_path(inp)
+            if file_path:
                 suffix = file_path.replace("\\", "/").rsplit("/", 1)[-1]
                 if suffix:
                     body.append(
