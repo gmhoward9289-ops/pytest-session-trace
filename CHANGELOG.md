@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+
+- `--anchor` codegen: emit `assert_arg_anchored` when Write quotes Read `tool_result` text
+- `find_anchor_pairs`, `load_tool_result_map` for transcript pairing
+
 ## 0.1.3
 
 - `assert_tool_input_contains` matches non-string input via `str()` (e.g. numeric `limit`)

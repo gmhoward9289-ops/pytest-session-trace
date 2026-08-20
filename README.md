@@ -66,7 +66,11 @@ pip install -e ".[anchor]"
 
 ```text
 python -m session_trace path/to/session.jsonl > test_session.py
+python -m session_trace --anchor path/to/session.jsonl > test_session.py
 ```
+
+With `--anchor`, codegen emits `assert_arg_anchored` when a Write/Edit `contents`
+quotes text from a prior Read `tool_result` in the JSONL (requires `[anchor]` extra).
 
 That file is a copy-pasteable starting point, not a required CI step for this package.
 
