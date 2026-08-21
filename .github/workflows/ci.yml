@@ -14,10 +14,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.10", "3.12", "3.13"]
+        python: ["3.10", "3.12", "3.13", "3.14"]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      # Repo under test, then the henhouse pin it asserts against. Two checkouts
+      # on purpose -- not a duplicate of the same tree.
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
         with:
@@ -27,6 +29,8 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
       - name: Install
         run: pip install ./henhouse -e . --no-deps && pip install pytest
       - name: Tests
