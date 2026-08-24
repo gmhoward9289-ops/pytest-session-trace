@@ -9,8 +9,6 @@ from session_trace.assert_tools import (
     assert_tool_order,
     assert_write_path,
 )
-from session_trace.types import ToolCall
-
 __all__ = [
     "ToolCall",
     "assert_no_tool",
@@ -19,3 +17,14 @@ __all__ = [
     "assert_tool_order",
     "assert_write_path",
 ]
+
+
+def __getattr__(name: str):
+    # ToolCall comes from henhouse; resolve it lazily so importing this package
+    # (which pytest does for every run via the pytest11 entry point) cannot fail
+    # when a repo-local module shadows henhouse on sys.path.
+    if name == "ToolCall":
+        from session_trace.types import ToolCall
+
+        return ToolCall
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
