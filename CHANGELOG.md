@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.8
+
+- Fix: plugin load no longer crashes pytest collection when a repo-local
+  `henhouse.py` shadows the henhouse package (e.g. under `python -m pytest`);
+  henhouse now imports lazily, and the `session_trace` fixture reports the
+  shadow clearly
+
 ## 0.1.7
 
 - `--anchor` pairs Edit (`new_string` / `contents` / `old_string`) and StrReplace (`new_string`, then `old_string`) with prior Read results
