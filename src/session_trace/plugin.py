@@ -7,8 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from session_trace.transcripts import load_tool_calls
-
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -26,4 +24,14 @@ def session_trace(request):
     )
     if not path:
         pytest.skip("no --session-trace / SESSION_TRACE")
+    try:
+        # Deferred so a broken or shadowed henhouse only fails tests that use
+        # this fixture, instead of crashing every pytest run at plugin load.
+        from session_trace.transcripts import load_tool_calls
+    except ImportError as exc:
+        pytest.fail(
+            "pytest-session-trace could not import its 'henhouse' dependency "
+            f"({exc}); a repo-local henhouse.py may be shadowing the package",
+            pytrace=False,
+        )
     return load_tool_calls(Path(path))
